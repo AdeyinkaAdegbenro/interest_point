@@ -4,6 +4,16 @@
 
 The tech stack is in Python 3, Django, PostgreSQL, JavaScript and AngularJS. Unit Tests are present in `points/tests.py` and `accounts/tests.py`.
 
+## Deployed Application
+
+The deployed application can be found at https://rideco-pointofinterest.herokuapp.com/ 
+
+## Database Diagram
+
+This can be found in the root folder as `RideCo _ Database ER diagram .png`
+
+![db erm diagram](https://i.imgur.com/6qrhYW6.png)
+
 ## Installation Instructions
 
 - Once you are in the interestpoint directory, Set up a Python virtual environment and install requirements:
@@ -56,12 +66,8 @@ python manage.py runserver
 
 - Then visit the application on http://localhost:8000/ to use it.
 
-### Useful feature to add next
+### Useful features to add next
 
 Add a feature that helps users to see what points of interests are trending/recommended across the application from other users. This feature would also let them search the whole application for other users' points of interests.
 
 A feature to share a point of interest on social media with friends.
-
-### Limitations of my solution
-
-cmd sjksdk adckjnadk
