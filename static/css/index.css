@@ -7,6 +7,6 @@
     font-size: 18px;
 }
 
-div#login-note.ten.wide.column .message, div#interest-box.ten.wide.column {
-    margin-top: 50px !important;
+#main-page, #login-form {
+    margin-top: 50%;
 }

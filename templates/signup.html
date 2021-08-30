@@ -8,7 +8,7 @@
             {% csrf_token %}
             <!-- {{ form.as_p }} -->
             {% for field in form %}
-                <div class="ui field">
+                <div class="ui required field">
                     {{field.label_tag}}
                     {{ field }}
                 </div>

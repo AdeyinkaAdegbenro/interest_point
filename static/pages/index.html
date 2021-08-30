@@ -38,7 +38,7 @@
                             <i class="ui edit icon"></i>Edit
                         </button>
                         
-                        <button ng-click="openSharePoint(interest)" class="ui red button">
+                        <button ng-click="openSharePoint(interest);shared_user=''" class="ui red button">
                             <i class="ui share icon" ></i>Share
                         </button>
                     </td>
@@ -84,13 +84,14 @@
             <i class="ui icon teal heart"></i>
         </div>
         <div class="content">
+            <div class="ui error message" ng-if="add_error_message">{{add_error_message}}</div>
             <form class="ui fluid form" id="points-form">
 
-                <div class="field">
+                <div class="required field">
                     <label>Add a point nickname</label>
                     <input type="text" id="point-nickname" name="point-nickname" placeholder="e.g. Eiffel Tower">
                 </div>
-                <div class="field">
+                <div class="required field">
                     <label>Select a point on the map by searching the map or dragging the marker</label>
                     <input type="text" id="point-search" name="point-search" placeholder="e.g. Eiffel Tower">
                     <div class="ui embed" id="map"></div>
@@ -108,14 +109,15 @@
             <i class="ui icon teal heart"></i>
         </div>
         <div class="content">
+            <div class="ui error message" ng-if="edit_error_message">{{edit_error_message}}</div>
             <form class="ui fluid form" id="points-form">
                 
-                <div class="field">
+                <div class="required field">
                     <label>Point Name</label>
                     <input  type="text" id="edit-point-nickname" name="point-nickname" placeholder="e.g. add a name for your point" >
                 </div>
 
-                <div class="field">
+                <div class="required field">
                     <label>Select a point on the map by searching the map or dragging the marker</label>
                     <input type="text" id="edit-point-search"  placeholder="search the map for a new point e.g. Eiffel Tower">
                     <div class="ui embed" id="edit-map"></div>
@@ -134,18 +136,20 @@
             <i class="ui icon teal heart"></i>
         </div>
         <div class="content">
+            <div class="ui error message" ng-if="share_error_message">{{share_error_message}}</div>
             <form class="ui form" ng-if="all_users.length > 0">
-                <div class="field">
+                <div class="required field">
                     <label >Select a user to share with</label>
                     <select ng-options="user.id as user.username for user in all_users" ng-model="shared_user" class="ui select dropdown" ng-change=updateSelected(shared_user)>
                     </select>
                 </div>
-                <button ng-click="cancelShareButton()" class="ui cancel button" type="cancel">Cancel</button>
-                <button id='share-point-button' ng-click="sharePoint()" class="ui approve button" type="submit">Share</button>
+                <button ng-click="cancelShareButton(); shared_user=''" class="ui cancel button" type="cancel">Cancel</button>
+                <button id='share-point-button' ng-click="sharePoint()" class="ui primary button" type="submit">Share</button>
             </form>
     
             <div class="ui message" ng-if="all_users.length  === 0">
                 There are currently no other users on the application to share with
+                <button ng-click="cancelShareButton(); shared_user=''" class="ui cancel button" type="cancel">Cancel</button>
             </div>
         </div>
 

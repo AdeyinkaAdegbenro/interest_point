@@ -10,11 +10,18 @@ from points.serializers import InterestPointSerializer , UserSerializer, SharedI
 # Create your views here.
 
 def home(request):
+    ''' 
+        this view fetches the home page of the application
+    '''
     return render(request, 'entry.html', context={})
 
 @csrf_exempt
 def index(request):
-    print('user request======>' , request.user, request.user.id, request.user.is_authenticated)
+    ''' 
+        this view creates a new interest point and
+        also fetches existing interest points
+    '''
+
     if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         if request.method == 'GET':
@@ -24,7 +31,6 @@ def index(request):
         elif request.method == 'POST':
             
             data = JSONParser().parse(request)
-            print('data==>', data, user)
             serializer = InterestPointSerializer(data=data)
             if serializer.is_valid():
                 serializer.save(user=user)
@@ -43,6 +49,10 @@ def index(request):
         return JsonResponse({"message": "Not authorized"}, status=400)
 
 def users(request):
+    ''' 
+        this view fetches other users excluding 
+        the logged in user
+    '''
     if request.user.is_authenticated:
         if request.method == 'GET':
             users = User.objects.filter().exclude(id=request.user.id).all()
@@ -52,6 +62,10 @@ def users(request):
         return JsonResponse({"message": "Not authorized"}, status=403)
 
 def share(request):
+    ''' 
+        this view is used to share an interest point with other users.
+        It also fetches interest points shared with logged in user.
+    '''
     if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         if request.method == 'GET':
@@ -60,7 +74,7 @@ def share(request):
             return JsonResponse(serializer.data, safe=False)
         if request.method == 'POST':
             data = JSONParser().parse(request)
-            shared_user = User.objects.get(pk=request.user.id)
+            shared_user = User.objects.get(pk=data['shared_user'])
             interest = InterestPoint.objects.get(pk=data['interest_id'])
             serializer = SharedInterestSerializer(data=data)
             if serializer.is_valid():

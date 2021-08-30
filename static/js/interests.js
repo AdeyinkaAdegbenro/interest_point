@@ -46,13 +46,47 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
 
   };
 
+  function valid (val, type) {
+    if (!val) {
+      return {err: true, msg: "Enter all required fields"}
+    }
+    if (type == 'str' && typeof val === 'string') {
+      return {err:false, msg: ''}
+    } else if (type == 'num' && typeof val === 'number') {
+      return {err: false, msg: ''}
+    } else {
+      return {err: true, msg: "An error has ocurred"}
+    }
+  }
+
   poi.submitPoint = function  () {
+    const url = '/index';
+    point_name = $("#point-nickname").val()
+    valid_lat= valid(poi.current_coords.lat, 'num')
+    if (valid_lat.err) {
+      poi.add_error_message = valid_lat.msg;
+      console.log(poi.add_error_message)
+      $timeout(function() { poi.add_error_message = ''}, 3000);
+      return
+    }
+    valid_lng = valid(poi.current_coords.lng, 'num');
+    if (valid_lng.err) {
+      poi.add_error_message = valid_lng.msg;
+      $timeout(function() { poi.add_error_message = ''}, 3000);
+      return
+    }
+    valid_point_name = valid(point_name, 'str');
+    if (valid_point_name.err) {
+      poi.add_error_message = valid_point_name.msg;
+      $timeout(function() { poi.add_error_message = ''}, 3000);
+      return
+    }
+
     $('#submit-point-button').addClass("loading");
-    const url = '/index'; 
     // set #submit-point-button to loading class
     $http.post(url, {'latitude': poi.current_coords.lat.toString(),
                      'longitude': poi.current_coords.lng.toString(),
-                     'name': $("#point-nickname").val()
+                     'name': point_name
     }).then(function successCallback (response) {
       poi.current_coords = {
         lat: null, lng: null
@@ -105,13 +139,13 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
     );
 
     if (editing) {
-      marker = new google.maps.Marker({
+      poi.intial_edit_marker = new google.maps.Marker({
         position: poi.default_map_center,
         map: map,
         draggable: true
       });
 
-      marker.addListener('dragend', function(event){
+      poi.intial_edit_marker.addListener('dragend', function(event){
         console.log('event coords', event, event.latLng.lat(), event.latLng.lng())
         poi.current_coords.lat = event.latLng.lat()
         poi.current_coords.lng = event.latLng.lng()
@@ -126,7 +160,7 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
     map.addListener("bounds_changed", () => {
       searchBox.setBounds(map.getBounds());
     });
-    let markers = [];
+    let markers = [poi.intial_edit_marker];
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
     searchBox.addListener("places_changed", () => {
@@ -137,7 +171,10 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
       }
       // Clear out the old markers.
       markers.forEach((marker) => {
-        marker.setMap(null);
+        if (marker) {
+          marker.setMap(null);
+        };
+        
       });
       markers = [];
       // For each place, get the icon, name and location.
@@ -187,13 +224,37 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
 
 
   poi.updatePoint = function () {
+    point_name = $("#edit-point-nickname").val();
+    console.log(poi.current_coords, point_name)
+    poi.edit_error_message =  "";
+    if (!poi.current_coords.lat) {
+      poi.edit_error_message =  "Enter all required fields";
+      $timeout(function() { poi.edit_error_message = ''}, 3000);
+      return
+    }
+    if (!poi.current_coords.lng) {
+      poi.edit_error_message =  "Enter all required fields";
+      $timeout(function() { poi.edit_error_message = ''}, 3000);
+      return
+    }
+    if (!poi.current_coords.id) {
+      poi.edit_error_message =  "Enter all required fields";
+      $timeout(function() { poi.edit_error_message = ''}, 3000);
+      return
+    }
+    if (!point_name) {
+      poi.edit_error_message =  "Enter all required fields";
+      $timeout(function() { poi.edit_error_message = ''}, 3000);
+      return
+    }
+
     // call /index using angular.http and a new point
     $('#edit-point-button').addClass("loading")
     const url = 'index'; 
     // set #submit-point-button to loading class
     $http.put(url, {'latitude': poi.current_coords.lat.toString(),
                     'longitude': poi.current_coords.lng.toString(),
-                    'name': $("#edit-point-nickname").val(),
+                    'name': point_name,
                     'id': poi.current_coords.id
     }).then(function successCallback (response) {
       console.log(response)
@@ -217,21 +278,44 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
   }
 
   poi.openSharePoint = function (interest) {
+    console.log('bf',poi.shared_user)
     poi.current_shared_interest = interest.id;
     poi.current_shared_interest_name = interest.name;
     poi.shared_user = "";
+    console.log('af', poi.shared_user)
     $('#share-modal').modal({detachable: false, closable: false}).modal('show');
-    
     
   };
 
   poi.sharePoint = function () {
+    console.log(poi.shared_user)
+    valid_interest = valid(poi.current_shared_interest, 'num')
+    if (valid_interest.err) {
+      poi.share_error_message = valid_interest.msg
+      $timeout(function() { poi.share_error_message = ''}, 3000);
+      return
+    }
+    valid_user = valid(poi.shared_user, 'num');
+    if (valid_user.err) {
+      poi.share_error_message = valid_user.msg
+      $timeout(function() { poi.share_error_message = ''}, 3000);
+      return
+    }
+
+
+    $('#share-point-button').addClass("loading");
     $http.post('/share', 
               {'interest_id': poi.current_shared_interest, 
                "shared_user": poi.shared_user}).then(function (response) {
                 console.log(response);
+                $('#share-point-button').removeClass("loading");
+                $('#share-modal').modal('hide');
+                poi.shared_user = "";
     }).catch(function (err) {
       console.log(err);
+      $('#share-point-button').removeClass("loading");
+      $('#share-modal').modal('hide');
+      poi.shared_user = "";
     });
   };
 
@@ -246,10 +330,11 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
   poi.cancelShareButton = function () {
     $('#share-modal').modal('hide');
     poi.current_shared_interest = null;
-    poi.shared_user = null;
+    poi.shared_user = "";
   };
 
   poi.updateSelected = function (shared_user) {
+    console.log('changed', shared_user)
     poi.shared_user = shared_user;
   }
 

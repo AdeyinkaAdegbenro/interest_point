@@ -17,9 +17,10 @@
      ></script>
     <!-- <base href='/'></base> -->
   </head>
+  <header><h1><a href="{% url 'home' %}">RIDECO</a></h1> </header>
   <body>
     <div class="ui centered grid">
-      <div class="ten wide column" style="margin-top: 50px;">
+      <div class="ten wide column" style="margin-top: 5%;">
         <div class="ui stacked segment">
           <a href="/"></a>
             {% if user.is_authenticated %}
