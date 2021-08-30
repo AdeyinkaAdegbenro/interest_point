@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %} 
+<div class="ui centered grid stacked segment">
+    
+    <form class="ui form" method="post">
+        <div></div>
+        <h3 class="ui header">Log In</h3> 
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="ui primary button" type="submit">Log In</button>
+    </form>
+</div>
+{% endblock content %}

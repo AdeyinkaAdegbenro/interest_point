@@ -1,0 +1,1 @@
+web: gunicorn interest_point.wsgi --log-file -

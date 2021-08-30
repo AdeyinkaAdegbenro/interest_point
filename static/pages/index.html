@@ -1,0 +1,155 @@
+<!doctype html>
+<html >
+  <head>
+    
+    <link rel="stylesheet" href="../static/css/index.css">
+  </head>
+  <body ng-controller="InterestsController">
+    
+    <div class="ui centered grid" >
+
+        <div class="one wide column"></div>
+
+        <div id="interest-box" class="ten wide column" style="margin-top: 50px;">
+            <h2>Points of Interest</h2>
+            <div ng-click="addPoint()">
+                <button class="ui icon teal button">
+                    <i class="add icon"></i>
+                    Add a Point of Interest</button>
+            </div>
+
+            <div ng-if="all_interests.length == 0" class="ui segment">
+                You have no points of interest yet.
+            </div>
+            <div id="message" ng-if="message.length" class="ui success message">{{message}}</div>
+
+            <!--Interests Table list-->
+            <table ng-if="all_interests.length > 0" class="ui celled table">
+                <thead>
+                    <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                  </tr></thead>
+                <tbody>
+                <tr  ng-repeat="interest in all_interests">
+                    <td>{{interest.name}}</td>
+                    <td>
+                        <button ng-click="editInterest(interest)" class="ui teal button">
+                            <i class="ui edit icon"></i>Edit
+                        </button>
+                        
+                        <button ng-click="openSharePoint(interest)" class="ui red button">
+                            <i class="ui share icon" ></i>Share
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="ui divider"></div>
+
+            <!--Shared TableList-->
+            <h4>Points of Interest shared with you</h4>
+            <div class="ui message" ng-if="shared_with_me.length === 0">No points of interests were shared with you yet.</div>
+            <div id="shared-message" ng-if="shared_message" class="ui success message">{{shared_message}}</div>
+            <table ng-if="shared_with_me.length" class="ui table">
+                <thead>
+                    <tr>
+                        <th>Shared By</th>
+                        <th>Point of Interest</th>
+                        <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="shared in shared_with_me">
+                        <td>{{shared.interest.user.username}}</td>
+                        <td>{{shared.interest.name}}</td>
+                        <td>
+                            <button id="add-list-button" ng-click="addToList(shared.interest)" class="ui teal button">
+                                <i class="ui add icon"></i>Add to your Interests
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="one wide column"></div>
+
+    </div>
+
+    <div class="ui modal" id="points-modal">
+        <div class="header">
+            add a new point of interest
+            <i class="ui icon teal heart"></i>
+        </div>
+        <div class="content">
+            <form class="ui fluid form" id="points-form">
+
+                <div class="field">
+                    <label>Add a point nickname</label>
+                    <input type="text" id="point-nickname" name="point-nickname" placeholder="e.g. Eiffel Tower">
+                </div>
+                <div class="field">
+                    <label>Select a point on the map by searching the map or dragging the marker</label>
+                    <input type="text" id="point-search" name="point-search" placeholder="e.g. Eiffel Tower">
+                    <div class="ui embed" id="map"></div>
+                </div>
+
+                <button ng-click="cancelButton(true)" class="ui button" type="cancel">Cancel</button>
+                <button id='submit-point-button' ng-click="submitPoint()" class="ui primary button" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="ui modal" id="edit-points-modal">
+        <div class="header">
+            edit point of interest
+            <i class="ui icon teal heart"></i>
+        </div>
+        <div class="content">
+            <form class="ui fluid form" id="points-form">
+                
+                <div class="field">
+                    <label>Point Name</label>
+                    <input  type="text" id="edit-point-nickname" name="point-nickname" placeholder="e.g. add a name for your point" >
+                </div>
+
+                <div class="field">
+                    <label>Select a point on the map by searching the map or dragging the marker</label>
+                    <input type="text" id="edit-point-search"  placeholder="search the map for a new point e.g. Eiffel Tower">
+                    <div class="ui embed" id="edit-map"></div>
+                </div>
+                    <button ng-click="cancelButton()" class="ui cancel button" type="cancel">Cancel</button>
+                    <button id='edit-point-button' ng-click="updatePoint()" class="ui primary button" type="submit">Update</button>
+                
+                
+            </form>
+        </div>
+    </div>
+
+    <div class="ui modal" id="share-modal">
+        <div class="header">
+            share "{{current_shared_interest_name}}"
+            <i class="ui icon teal heart"></i>
+        </div>
+        <div class="content">
+            <form class="ui form" ng-if="all_users.length > 0">
+                <div class="field">
+                    <label >Select a user to share with</label>
+                    <select ng-options="user.id as user.username for user in all_users" ng-model="shared_user" class="ui select dropdown" ng-change=updateSelected(shared_user)>
+                    </select>
+                </div>
+                <button ng-click="cancelShareButton()" class="ui cancel button" type="cancel">Cancel</button>
+                <button id='share-point-button' ng-click="sharePoint()" class="ui approve button" type="submit">Share</button>
+            </form>
+    
+            <div class="ui message" ng-if="all_users.length  === 0">
+                There are currently no other users on the application to share with
+            </div>
+        </div>
+
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,13 @@
+<html> 
+    <head>
+    <title>Points of Interest</title> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css">
+    </head>
+    <body> <header>
+    <h1><a href="{% url 'home' %}">Home</a></h1> </header>
+    <div class="ui centered grid">
+        {% block content %}
+         {% endblock content %}
+        </div> 
+    </body>
+</html>

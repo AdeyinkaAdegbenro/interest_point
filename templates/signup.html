@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %} 
+    
+    <div class="ui centered grid stacked segment">
+        <form class="ui fluid form" method="post">
+            <div></div>
+            <h3 class="ui header">Sign up</h3> 
+            {% csrf_token %}
+            <!-- {{ form.as_p }} -->
+            {% for field in form %}
+                <div class="ui field">
+                    {{field.label_tag}}
+                    {{ field }}
+                </div>
+                {% if field.help_text %}
+                    <div class="ui message help" style="font-style: italic;">{{ field.help_text|safe }}</div>
+                {% endif %}
+            {% endfor %}
+            <button class="ui primary button" type="submit">Sign up</button>
+        </form>
+    </div>
+{% endblock content %}
