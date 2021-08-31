@@ -281,7 +281,7 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
     console.log('bf',poi.shared_user)
     poi.current_shared_interest = interest.id;
     poi.current_shared_interest_name = interest.name;
-    poi.shared_user = "";
+    poi.shared_user = {val: ""}
     console.log('af', poi.shared_user)
     $('#share-modal').modal({detachable: false, closable: false}).modal('show');
     
@@ -295,7 +295,7 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
       $timeout(function() { poi.share_error_message = ''}, 3000);
       return
     }
-    valid_user = valid(poi.shared_user, 'num');
+    valid_user = valid(poi.shared_user.val, 'num');
     if (valid_user.err) {
       poi.share_error_message = valid_user.msg
       $timeout(function() { poi.share_error_message = ''}, 3000);
@@ -306,16 +306,16 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
     $('#share-point-button').addClass("loading");
     $http.post('/share', 
               {'interest_id': poi.current_shared_interest, 
-               "shared_user": poi.shared_user}).then(function (response) {
+               "shared_user": poi.shared_user.val}).then(function (response) {
                 console.log(response);
                 $('#share-point-button').removeClass("loading");
                 $('#share-modal').modal('hide');
-                poi.shared_user = "";
+                poi.shared_user.val = "";
     }).catch(function (err) {
       console.log(err);
       $('#share-point-button').removeClass("loading");
       $('#share-modal').modal('hide');
-      poi.shared_user = "";
+      poi.shared_user.val = "";
     });
   };
 
@@ -330,12 +330,12 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
   poi.cancelShareButton = function () {
     $('#share-modal').modal('hide');
     poi.current_shared_interest = null;
-    poi.shared_user = "";
+    poi.shared_user.val = "";
   };
 
-  poi.updateSelected = function (shared_user) {
-    console.log('changed', shared_user)
-    poi.shared_user = shared_user;
+  poi.updateSelected = function (value) {
+    console.log('changed', value)
+    poi.shared_user.val = value;
   }
 
   poi.addToList = function (interest) {
