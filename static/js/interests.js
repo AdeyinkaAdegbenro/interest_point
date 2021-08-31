@@ -327,10 +327,10 @@ app.controller('InterestsController', ['$scope', '$http', "$timeout", function($
     })
   };
 
-  poi.cancelShareButton = function () {
+  poi.cancelShareButton = function (value) {
     $('#share-modal').modal('hide');
     poi.current_shared_interest = null;
-    poi.shared_user.val = "";
+    poi.shared_user.val = value;
   };
 
   poi.updateSelected = function (value) {

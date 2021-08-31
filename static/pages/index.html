@@ -143,13 +143,13 @@
                     <select ng-options="user.id as user.username for user in all_users" ng-model="shared_user.val" class="ui select dropdown" ng-change=updateSelected(shared_user.val)>
                     </select>
                 </div>
-                <button ng-click="cancelShareButton(); .val=''" class="ui cancel button" type="cancel">Cancel</button>
+                <button ng-click="cancelShareButton()" class="ui cancel button" type="cancel">Cancel</button>
                 <button id='share-point-button' ng-click="sharePoint()" class="ui primary button" type="submit">Share</button>
             </form>
     
             <div class="ui message" ng-if="all_users.length  === 0">
                 There are currently no other users on the application to share with
-                <button ng-click="cancelShareButton(); shared_user.val=''" class="ui cancel button" type="cancel">Cancel</button>
+                <button ng-click="cancelShareButton(); " class="ui cancel button" type="cancel">Cancel</button>
             </div>
         </div>
 
